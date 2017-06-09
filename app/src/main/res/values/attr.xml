@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SakuraLyrics">
+        <attr name="lyricsLightColor" format="color|integer" />
+        <attr name="lyricsNormalColor" format="color|integer" />
+        <attr name="lyricsLightSize" format="dimension|integer" />
+        <attr name="lyricsNormalSize" format="dimension|integer" />
+        <attr name="lyricsLineHeight" format="dimension|integer" />
+    </declare-styleable>
+
+</resources>

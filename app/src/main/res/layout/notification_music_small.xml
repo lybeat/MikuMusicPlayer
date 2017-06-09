@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    tools:background="#FFFFFF"
+    tools:layout_height="60dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/album_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <FrameLayout
+        android:id="@+id/close_layout"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/selector_remote_views_action_background"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/close_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_remote_view_close" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/album_img"
+        android:layout_toLeftOf="@+id/play_controls_layout"
+        android:layout_toRightOf="@+id/album_img"
+        android:layout_toStartOf="@+id/play_controls_layout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:text="Only my railgun" />
+
+        <TextView
+            android:id="@+id/artist_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="#AB000000"
+            android:textSize="14sp"
+            tools:text="fripSide" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/play_controls_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <FrameLayout
+            android:id="@+id/play_last_layout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_remote_views_action_background"
+            android:clickable="true">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/play_last_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/ic_remote_view_play_last" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/play_toggle_layout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_remote_views_action_background"
+            android:clickable="true">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/play_toggle_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/ic_remote_view_play" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/play_next_layout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_remote_views_action_background"
+            android:clickable="true">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/play_next_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/ic_remote_view_play_next" />
+        </FrameLayout>
+    </LinearLayout>
+</RelativeLayout>

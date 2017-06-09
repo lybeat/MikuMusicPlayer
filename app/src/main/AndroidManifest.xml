@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cc.sayaki.music">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="cc.sayaki.music.ui.main.MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.music.MusicPlayerActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".player.PlaybackService">
+            <intent-filter>
+                <action android:name="cc.sayaki.music.ACTION_PLAY_TOGGLE" />
+                <action android:name="cc.sayaki.music.ACTION_LAST" />
+                <action android:name="cc.sayaki.music.ACTION_NEXT" />
+                <action android:name="cc.sayaki.music.ACTION_STOP_SERVICE" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
