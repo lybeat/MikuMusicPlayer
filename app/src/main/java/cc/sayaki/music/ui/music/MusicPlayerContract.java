@@ -23,7 +23,7 @@ public interface MusicPlayerContract {
 
         void onPlaybackServiceUnbound();
 
-        void onSongFavorite(@NonNull Song song);
+        void onSongSetAsFavorite(@NonNull Song song);
 
         void onSongUpdated(@Nullable Song song);
 

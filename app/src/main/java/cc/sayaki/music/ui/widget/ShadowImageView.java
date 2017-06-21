@@ -34,11 +34,11 @@ public class ShadowImageView extends ImageView {
 
     private static final int DEFAULT_BACKGROUND_COLOR = 0xFF3C5F78;
 
-    private int mShadowRadius;
+    private int shadowRadius;
 
     // Animation
-    private ObjectAnimator mRotateAnimator;
-    private long mLastAnimationValue;
+    private ObjectAnimator rotateAnimator;
+    private long lastAnimationValue;
 
     public ShadowImageView(Context context) {
         this(context, null);
@@ -65,18 +65,18 @@ public class ShadowImageView extends ImageView {
         final int shadowXOffset = (int) (density * X_OFFSET);
         final int shadowYOffset = (int) (density * Y_OFFSET);
 
-        mShadowRadius = (int) (density * SHADOW_RADIUS);
+        shadowRadius = (int) (density * SHADOW_RADIUS);
 
         ShapeDrawable circle;
         if (elevationSupported()) {
             circle = new ShapeDrawable(new OvalShape());
             ViewCompat.setElevation(this, SHADOW_ELEVATION * density);
         } else {
-            OvalShape oval = new OvalShadow(mShadowRadius);
+            OvalShape oval = new OvalShadow(shadowRadius);
             circle = new ShapeDrawable(oval);
             ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, circle.getPaint());
-            circle.getPaint().setShadowLayer(mShadowRadius, shadowXOffset, shadowYOffset, KEY_SHADOW_COLOR);
-            final int padding = mShadowRadius;
+            circle.getPaint().setShadowLayer(shadowRadius, shadowXOffset, shadowYOffset, KEY_SHADOW_COLOR);
+            final int padding = shadowRadius;
             // set padding so the inner image sits correctly within the shadow.
             setPadding(padding, padding, padding, padding);
         }
@@ -84,11 +84,11 @@ public class ShadowImageView extends ImageView {
         circle.getPaint().setColor(DEFAULT_BACKGROUND_COLOR);
         setBackground(circle);
 
-        mRotateAnimator = ObjectAnimator.ofFloat(this, "rotation", 0f, 360f);
-        mRotateAnimator.setDuration(7200);
-        mRotateAnimator.setInterpolator(new LinearInterpolator());
-        mRotateAnimator.setRepeatMode(ValueAnimator.RESTART);
-        mRotateAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnimator = ObjectAnimator.ofFloat(this, "rotation", 0f, 360f);
+        rotateAnimator.setDuration(10800);
+        rotateAnimator.setInterpolator(new LinearInterpolator());
+        rotateAnimator.setRepeatMode(ValueAnimator.RESTART);
+        rotateAnimator.setRepeatCount(ValueAnimator.INFINITE);
     }
 
     private boolean elevationSupported() {
@@ -99,38 +99,45 @@ public class ShadowImageView extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (!elevationSupported()) {
-            setMeasuredDimension(getMeasuredWidth() + mShadowRadius * 2, getMeasuredHeight() + mShadowRadius * 2);
+            setMeasuredDimension(getMeasuredWidth() + shadowRadius * 2, getMeasuredHeight() + shadowRadius * 2);
         }
     }
 
     // Animation
-
     public void startRotateAnimation() {
-        mRotateAnimator.cancel();
-        mRotateAnimator.start();
+        if (rotateAnimator != null) {
+            rotateAnimator.cancel();
+            rotateAnimator.start();
+        }
     }
 
     public void cancelRotateAnimation() {
-        mLastAnimationValue = 0;
-        mRotateAnimator.cancel();
+        lastAnimationValue = 0;
+        if (rotateAnimator != null) {
+            rotateAnimator.cancel();
+        }
     }
 
     public void pauseRotateAnimation() {
-        mLastAnimationValue = mRotateAnimator.getCurrentPlayTime();
-        mRotateAnimator.cancel();
+        if (rotateAnimator != null) {
+            lastAnimationValue = rotateAnimator.getCurrentPlayTime();
+            rotateAnimator.cancel();
+        }
     }
 
     public void resumeRotateAnimation() {
-        mRotateAnimator.start();
-        mRotateAnimator.setCurrentPlayTime(mLastAnimationValue);
+        if (rotateAnimator != null) {
+            rotateAnimator.start();
+            rotateAnimator.setCurrentPlayTime(lastAnimationValue);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mRotateAnimator != null) {
-            mRotateAnimator.cancel();
-            mRotateAnimator = null;
+        if (rotateAnimator != null) {
+            rotateAnimator.cancel();
+            rotateAnimator = null;
         }
     }
 
@@ -138,13 +145,13 @@ public class ShadowImageView extends ImageView {
      * Draw oval shadow below ImageView under lollipop.
      */
     private class OvalShadow extends OvalShape {
-        private RadialGradient mRadialGradient;
-        private Paint mShadowPaint;
+        private RadialGradient radialGradient;
+        private Paint shadowPaint;
 
         OvalShadow(int shadowRadius) {
             super();
-            mShadowPaint = new Paint();
-            mShadowRadius = shadowRadius;
+            shadowPaint = new Paint();
+            ShadowImageView.this.shadowRadius = shadowRadius;
             updateRadialGradient((int) rect().width());
         }
 
@@ -158,15 +165,15 @@ public class ShadowImageView extends ImageView {
         public void draw(Canvas canvas, Paint paint) {
             final int viewWidth = ShadowImageView.this.getWidth();
             final int viewHeight = ShadowImageView.this.getHeight();
-            canvas.drawCircle(viewWidth / 2, viewHeight / 2, viewWidth / 2, mShadowPaint);
-            canvas.drawCircle(viewWidth / 2, viewHeight / 2, viewWidth / 2 - mShadowRadius, paint);
+            canvas.drawCircle(viewWidth / 2, viewHeight / 2, viewWidth / 2, shadowPaint);
+            canvas.drawCircle(viewWidth / 2, viewHeight / 2, viewWidth / 2 - shadowRadius, paint);
         }
 
         private void updateRadialGradient(int diameter) {
-            mRadialGradient = new RadialGradient(diameter / 2, diameter / 2,
-                    mShadowRadius, new int[]{FILL_SHADOW_COLOR, Color.TRANSPARENT},
+            radialGradient = new RadialGradient(diameter / 2, diameter / 2,
+                    shadowRadius, new int[]{FILL_SHADOW_COLOR, Color.TRANSPARENT},
                     null, Shader.TileMode.CLAMP);
-            mShadowPaint.setShader(mRadialGradient);
+            shadowPaint.setShader(radialGradient);
         }
     }
 }

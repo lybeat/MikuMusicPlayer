@@ -4,16 +4,22 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
-import cc.sayaki.music.ui.main.MainActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import cc.sayaki.music.R;
 import cc.sayaki.music.data.model.PlayList;
 import cc.sayaki.music.data.model.Song;
+import cc.sayaki.music.ui.music.MusicPlayerActivity;
 
 /**
  * Author: sayaki
@@ -32,6 +38,7 @@ public class PlaybackService extends Service implements IPlayback, IPlayback.Cal
     private Player player;
 
     private final Binder binder = new LocalBinder();
+    private Notification notification;
 
     public class LocalBinder extends Binder {
         public PlaybackService getService() {
@@ -48,6 +55,7 @@ public class PlaybackService extends Service implements IPlayback, IPlayback.Cal
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("PlaybackService", "@@@onStartCommand");
         if (intent != null) {
             String action = intent.getAction();
             if (ACTION_PLAY_TOGGLE.equals(action)) {
@@ -74,6 +82,7 @@ public class PlaybackService extends Service implements IPlayback, IPlayback.Cal
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Log.i("PlaybackService", "@@@onBind");
         return binder;
     }
 
@@ -197,9 +206,11 @@ public class PlaybackService extends Service implements IPlayback, IPlayback.Cal
     }
 
     private void showNotification() {
-        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        Intent intent = new Intent(this, MusicPlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
+        notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_music_note)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(pi)
                 .setCustomContentView(getSmallRemoteViews())
@@ -239,13 +250,24 @@ public class PlaybackService extends Service implements IPlayback, IPlayback.Cal
         remoteViews.setOnClickPendingIntent(R.id.close_img, getPendingIntent(ACTION_STOP_SERVICE));
     }
 
-    private void updateRemoteViews(RemoteViews remoteViews) {
+    private void updateRemoteViews(final RemoteViews remoteViews) {
         Song song = player.getPlayingSong();
         if (song != null) {
             remoteViews.setTextViewText(R.id.name_txt, song.getDisplayName());
             remoteViews.setTextViewText(R.id.artist_txt, song.getArtist());
+            Glide.with(this)
+                    .load(song.getAlbum())
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            remoteViews.setImageViewBitmap(R.id.album_img, resource);
+                            startForeground(NOTIFICATION_ID, notification);
+                        }
+                    });
         }
-        remoteViews.setImageViewResource(R.id.play_toggle_img, isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
+        remoteViews.setImageViewResource(R.id.play_toggle_img,
+                isPlaying() ? R.drawable.ic_remote_view_pause : R.drawable.ic_remote_view_play);
     }
 
     private PendingIntent getPendingIntent(String action) {

@@ -1,5 +1,7 @@
 package cc.sayaki.music.ui.playlist;
 
+import android.util.Log;
+
 import java.util.List;
 
 import cc.sayaki.music.data.model.PlayList;
@@ -22,13 +24,15 @@ public class PlayListPresenter implements PlayListContract.Presenter {
 
     public PlayListPresenter(MusicRepository repository, PlayListContract.View view) {
         this.repository = repository;
-        compositeSubscription = new CompositeSubscription();
-        view.setPresenter(this);
+        this.view = view;
+        this.compositeSubscription = new CompositeSubscription();
+        this.view.setPresenter(this);
     }
 
     @Override
     public void subscribe() {
-        loadPlayLists();
+        loadLocalPlayLists();
+//        loadRemotePlayLists();
     }
 
     @Override
@@ -38,8 +42,8 @@ public class PlayListPresenter implements PlayListContract.Presenter {
     }
 
     @Override
-    public void loadPlayLists() {
-        Subscription subscription = repository.playLists()
+    public void loadLocalPlayLists() {
+        Subscription subscription = repository.loadLocalPlayLists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<PlayList>>() {
@@ -62,6 +66,38 @@ public class PlayListPresenter implements PlayListContract.Presenter {
                     @Override
                     public void onNext(List<PlayList> playLists) {
                         view.onPlayListLoaded(playLists);
+                    }
+                });
+        compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void loadRemotePlayLists() {
+        Subscription subscription = repository.loadRemotePlayLists()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<PlayList>>() {
+                    @Override
+                    public void onStart() {
+                        view.showLoading();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        view.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.hideLoading();
+                        view.handleError(e);
+                        Log.i("PlayListPresenter", "@@@onError: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<PlayList> playLists) {
+                        view.onPlayListLoaded(playLists);
+                        Log.i("PlayListPresenter", "@@@onNext");
                     }
                 });
         compositeSubscription.add(subscription);

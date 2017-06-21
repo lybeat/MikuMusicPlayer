@@ -14,8 +14,6 @@ public class RxBus {
 
     private static final String TAG = "RxBus";
 
-    private static volatile RxBus sInstance;
-
     private static final class HolderClass {
         private static final RxBus INSTANCE = new RxBus();
     }

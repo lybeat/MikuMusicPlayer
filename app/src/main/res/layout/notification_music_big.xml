@@ -6,12 +6,11 @@
     android:layout_height="100dp"
     android:background="@color/white">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/album_img"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
+        android:scaleType="centerCrop" />
 
     <FrameLayout
         android:id="@+id/close_layout"
@@ -22,7 +21,7 @@
         android:background="@drawable/selector_remote_views_action_background"
         android:clickable="true">
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/close_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,7 +78,7 @@
             android:background="@drawable/selector_remote_views_action_background"
             android:clickable="true">
 
-            <android.support.v7.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/play_toggle_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +96,7 @@
             android:background="@drawable/selector_remote_views_action_background"
             android:clickable="true">
 
-            <android.support.v7.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/play_last_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -116,7 +115,7 @@
             android:background="@drawable/selector_remote_views_action_background"
             android:clickable="true">
 
-            <android.support.v7.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/play_next_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

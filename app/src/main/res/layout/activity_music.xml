@@ -71,8 +71,7 @@
                 android:textSize="10sp" />
 
             <SeekBar
-                android:id="@+id/music_bar"
-                style="@style/MikuSeekBar"
+                style="@style/Miku.Theme.Widget.SeekBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -149,11 +148,12 @@
     </LinearLayout>
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/tool_bar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:popupTheme="@style/OverflowMenu"
-        app:theme="@style/ToolbarTheme"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        app:theme="@style/Miku.Theme.Widget.Toolbar"
+        app:titleTextAppearance="@style/Miku.Theme.TextAppearance.Toolbar.Title"
+        app:subtitleTextAppearance="@style/Miku.Theme.TextAppearance.Toolbar.Subtitle"/>
 </FrameLayout>

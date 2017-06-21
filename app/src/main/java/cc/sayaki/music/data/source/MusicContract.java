@@ -2,6 +2,8 @@ package cc.sayaki.music.data.source;
 
 import java.util.List;
 
+import cc.sayaki.music.data.model.Album;
+import cc.sayaki.music.data.model.AlbumResp;
 import cc.sayaki.music.data.model.Folder;
 import cc.sayaki.music.data.model.PlayList;
 import cc.sayaki.music.data.model.Song;
@@ -13,8 +15,15 @@ import rx.Observable;
  */
 public interface MusicContract {
 
+    // Album
+    Observable<List<Album>> loadLocalAlba();
+
+    Observable<AlbumResp> loadRemoteAlba();
+
     // PlayList
-    Observable<List<PlayList>> playLists();
+    Observable<List<PlayList>> loadLocalPlayLists();
+
+    Observable<List<PlayList>> loadRemotePlayLists();
 
     List<PlayList> cachedPlayLists();
 
@@ -36,6 +45,8 @@ public interface MusicContract {
     Observable<Folder> delete(Folder folder);
 
     // Song
+    Observable<List<Song>> loadRemoteSongs(String rid, String timestamp);
+
     Observable<List<Song>> insert(List<Song> songs);
 
     Observable<Song> update(Song song);

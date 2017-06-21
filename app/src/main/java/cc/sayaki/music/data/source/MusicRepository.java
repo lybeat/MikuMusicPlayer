@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.sayaki.music.MikuApplication;
+import cc.sayaki.music.data.model.Album;
+import cc.sayaki.music.data.model.AlbumResp;
 import cc.sayaki.music.data.model.Folder;
 import cc.sayaki.music.data.model.PlayList;
 import cc.sayaki.music.data.model.Song;
@@ -32,14 +34,29 @@ public class MusicRepository implements MusicContract {
     }
 
     @Override
-    public Observable<List<PlayList>> playLists() {
-        return localDataSource.playLists()
+    public Observable<List<Album>> loadLocalAlba() {
+        return localDataSource.loadLocalAlba();
+    }
+
+    @Override
+    public Observable<AlbumResp> loadRemoteAlba() {
+        return localDataSource.loadRemoteAlba();
+    }
+
+    @Override
+    public Observable<List<PlayList>> loadLocalPlayLists() {
+        return localDataSource.loadLocalPlayLists()
                 .doOnNext(new Action1<List<PlayList>>() {
                     @Override
                     public void call(List<PlayList> playLists) {
                         cachedPlayLists = playLists;
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<PlayList>> loadRemotePlayLists() {
+        return localDataSource.loadRemotePlayLists();
     }
 
     @Override
@@ -88,6 +105,11 @@ public class MusicRepository implements MusicContract {
     @Override
     public Observable<Folder> delete(Folder folder) {
         return localDataSource.delete(folder);
+    }
+
+    @Override
+    public Observable<List<Song>> loadRemoteSongs(String rid, String timestamp) {
+        return localDataSource.loadRemoteSongs(rid, timestamp);
     }
 
     @Override

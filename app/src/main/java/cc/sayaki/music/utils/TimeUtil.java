@@ -2,6 +2,10 @@ package cc.sayaki.music.utils;
 
 import android.annotation.SuppressLint;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Author: sayaki
  * Date: 2017/6/8
@@ -20,5 +24,11 @@ public class TimeUtil {
         } else {
             return String.format("%02d:%02d", minute, second);
         }
+    }
+
+    public static String getCurrentTime(String format) {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.CHINA);
+        return sdf.format(date);
     }
 }

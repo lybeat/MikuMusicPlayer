@@ -6,7 +6,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "cc.sayaki.mikumusicplayer"
+        applicationId "cc.sayaki.music"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -46,5 +46,20 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:1.0'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.1@aar'
 
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    // Okhttp3
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'jp.wasabeef:glide-transformations:2.0.1'
+
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.6.8'
+
+    // LabelView
+    compile 'com.flyco.labelview:FlycoLabelView_Lib:1.0.2@aar'
 }

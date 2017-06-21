@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:background="?attr/itemBackground">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackgroundBorderless">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,8 +13,9 @@
 
         <ImageView
             android:id="@+id/album_img"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
             android:contentDescription="@null"
             android:gravity="center" />
 
@@ -31,40 +31,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/color_title" />
 
             <TextView
                 android:id="@+id/summary_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/color_secondary1"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/layout_action"
-        android:layout_width="64dp"
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/action_img"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:paddingLeft="@dimen/mp.margin.large"
-        android:paddingRight="@dimen/mp.margin.large">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/action_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="center"
-            app:src="@drawable/ic_more_vert" />
-    </FrameLayout>
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:src="@drawable/ic_more_vert" />
 
     <View
         android:id="@+id/underline"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp" />
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:background="@color/divider" />
 </FrameLayout>

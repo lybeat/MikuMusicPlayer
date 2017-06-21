@@ -31,7 +31,9 @@ public interface PlayListContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadPlayLists();
+        void loadLocalPlayLists();
+
+        void loadRemotePlayLists();
 
         void createPlayList(PlayList playList);
 

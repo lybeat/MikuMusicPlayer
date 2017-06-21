@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/color_accent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:popupTheme="@style/Miku.Theme.Widget.Toolbar"
+        app:title=""
+        app:titleTextAppearance="@style/Miku.Theme.TextAppearance.Toolbar.Title" />
+
     <android.support.v7.widget.RecyclerView
         style="@style/Miku.Theme.Widget.RecyclerView"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/mp.padding.large"
         tools:listitem="@layout/item_play_list" />
 
 </LinearLayout>

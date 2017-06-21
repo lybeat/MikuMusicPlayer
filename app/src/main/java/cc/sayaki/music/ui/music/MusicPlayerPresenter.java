@@ -5,10 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
+import cc.sayaki.music.RxBus;
 import cc.sayaki.music.data.model.Song;
+import cc.sayaki.music.data.source.MusicRepository;
 import cc.sayaki.music.data.sp.MusicSp;
+import cc.sayaki.music.event.FavoriteChangeEvent;
 import cc.sayaki.music.player.PlaybackService;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -19,6 +27,7 @@ public class MusicPlayerPresenter implements MusicPlayerContract.Presenter {
 
     private Context context;
     private MusicPlayerContract.View view;
+    private MusicRepository repository;
     private CompositeSubscription compositeSubscription;
 
     private PlaybackService playbackService;
@@ -39,10 +48,11 @@ public class MusicPlayerPresenter implements MusicPlayerContract.Presenter {
         }
     };
 
-    public MusicPlayerPresenter(Context context, MusicPlayerContract.View view) {
+    public MusicPlayerPresenter(Context context, MusicRepository repository, MusicPlayerContract.View view) {
         this.context = context;
         this.view = view;
-        compositeSubscription = new CompositeSubscription();
+        this.repository = repository;
+        this.compositeSubscription = new CompositeSubscription();
         this.view.setPresenter(this);
     }
 
@@ -71,7 +81,27 @@ public class MusicPlayerPresenter implements MusicPlayerContract.Presenter {
 
     @Override
     public void setSongAsFavorite(Song song, boolean favorite) {
+        Subscription subscription = repository.setSongAsFavorite(song, favorite)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Song>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Song song) {
+                        view.onSongSetAsFavorite(song);
+                        RxBus.getInstance().post(new FavoriteChangeEvent(song));
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     @Override

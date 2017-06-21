@@ -19,7 +19,7 @@ import cc.sayaki.music.player.PlayMode;
  */
 public class PlayList implements Parcelable {
 
-    public static final int NO_POSITION = -1;
+    private static final int NO_POSITION = -1;
 
     private int id;
     private String name;

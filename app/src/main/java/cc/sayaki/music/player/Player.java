@@ -208,10 +208,13 @@ public class Player implements IPlayback, MediaPlayer.OnCompletionListener {
     public void onCompletion(MediaPlayer mp) {
         Song next = null;
         PlayMode playMode = playList.getPlayMode();
-        if (playMode == PlayMode.SINGLE) {
+        if (playMode == PlayMode.LIST && playList.getPlayingIndex() == playList.getNumOfSongs() - 1) {
+            // In the end of the list
+            // Do nothing, just deliver the callback
+        } else if (playMode == PlayMode.SINGLE) {
             next = playList.getCurrentSong();
             play();
-        } else if (playMode == PlayMode.LOOP || playMode == PlayMode.SHUFFLE){
+        } else {
             boolean hasNext = playList.hasNext(true);
             if (hasNext) {
                 next = playList.next();

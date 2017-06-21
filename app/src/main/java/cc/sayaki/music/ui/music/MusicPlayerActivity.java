@@ -8,8 +8,10 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import cc.sayaki.music.R;
 import cc.sayaki.music.RxBus;
 import cc.sayaki.music.data.model.PlayList;
 import cc.sayaki.music.data.model.Song;
+import cc.sayaki.music.data.source.MusicRepository;
 import cc.sayaki.music.data.sp.MusicSp;
 import cc.sayaki.music.event.PlayListNowEvent;
 import cc.sayaki.music.event.PlaySongEvent;
@@ -30,7 +33,9 @@ import cc.sayaki.music.ui.base.BaseActivity;
 import cc.sayaki.music.ui.widget.SakuraLyrics;
 import cc.sayaki.music.ui.widget.ShadowImageView;
 import cc.sayaki.music.utils.AlbumUtil;
+import cc.sayaki.music.utils.ScreenUtil;
 import cc.sayaki.music.utils.TimeUtil;
+import cc.sayaki.music.utils.UnitUtil;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -41,6 +46,9 @@ import rx.functions.Action1;
  */
 public class MusicPlayerActivity extends BaseActivity implements
         MusicPlayerContract.View, IPlayback.Callback {
+
+    private static final String EXTRA_PLAY_LIST = "play_list";
+    private static final String EXTRA_PLAY_INDEX = "play_index";
 
     private static final long UPDATE_PROGRESS_INTERVAL = 1000;
 
@@ -56,7 +64,7 @@ public class MusicPlayerActivity extends BaseActivity implements
     TextView progressTxt;
     @BindView(R.id.duration_txt)
     TextView durationTxt;
-    @BindView(R.id.music_bar)
+    @BindView(R.id.seek_bar)
     SeekBar seekBar;
     @BindView(R.id.play_mode_toggle_img)
     ImageView playModeImg;
@@ -68,10 +76,12 @@ public class MusicPlayerActivity extends BaseActivity implements
     ImageView playNextImg;
     @BindView(R.id.favorite_img)
     ImageView favoriteImg;
-    @BindView(R.id.tool_bar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     private IPlayback player;
+    private PlayList playList;
+    private int playIndex;
 
     private MusicPlayerContract.Presenter presenter;
 
@@ -94,9 +104,11 @@ public class MusicPlayerActivity extends BaseActivity implements
         }
     };
 
-    public static void launch(Context context) {
+    public static void launch(Context context, PlayList playList, int playIndex) {
         Intent intent = new Intent();
         intent.setClass(context, MusicPlayerActivity.class);
+        intent.putExtra(EXTRA_PLAY_LIST, playList);
+        intent.putExtra(EXTRA_PLAY_INDEX, playIndex);
         context.startActivity(intent);
     }
 
@@ -108,11 +120,26 @@ public class MusicPlayerActivity extends BaseActivity implements
 
     @Override
     protected void initData() {
-
+        playList = getIntent().getParcelableExtra(EXTRA_PLAY_LIST);
+        playIndex = getIntent().getIntExtra(EXTRA_PLAY_INDEX, 0);
     }
 
     @Override
     protected void initView() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            toolbar.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ScreenUtil.getStatusBarHeight(this) + UnitUtil.dp2px(this, 48)));
+            toolbar.setPadding(0, ScreenUtil.getStatusBarHeight(this), 0, 0);
+            displayLayout.setPadding(0, ScreenUtil.getStatusBarHeight(this), 0, 0);
+        }
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -128,7 +155,7 @@ public class MusicPlayerActivity extends BaseActivity implements
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                seekTo(seekBar.getProgress());
+                seekTo(getDuration(seekBar.getProgress()));
                 if (player.isPlaying()) {
                     handler.removeCallbacks(progressCallback);
                     handler.post(progressCallback);
@@ -136,7 +163,8 @@ public class MusicPlayerActivity extends BaseActivity implements
             }
         });
 
-        new MusicPlayerPresenter(this, this).subscribe();
+        new MusicPlayerPresenter(this, MusicRepository.getInstance(), this).subscribe();
+        startService(new Intent(this, PlaybackService.class));
     }
 
     @Override
@@ -294,6 +322,8 @@ public class MusicPlayerActivity extends BaseActivity implements
     public void onPlaybackServiceBound(PlaybackService service) {
         player = service;
         player.registerCallback(this);
+
+        onPlayListNowEvent(new PlayListNowEvent(playList, playIndex));
     }
 
     @Override
@@ -303,7 +333,7 @@ public class MusicPlayerActivity extends BaseActivity implements
     }
 
     @Override
-    public void onSongFavorite(@NonNull Song song) {
+    public void onSongSetAsFavorite(@NonNull Song song) {
         favoriteImg.setEnabled(true);
         updateFavoriteToggle(song.isFavorite());
     }
